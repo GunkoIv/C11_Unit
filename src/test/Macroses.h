@@ -13,6 +13,8 @@ private: \
         TS_GEN::addTest(this); \
     } \
     static ClassName m_self; \
+    virtual ~ClassName() {} \
+    ClassName(ClassName &&) = default; \
 }; \
 ClassName ClassName::m_self = ClassName(#ClassName); \
 bool ClassName::exucute()
@@ -28,6 +30,8 @@ private: \
         TS_GEN::addTest(this); \
     } \
     static ClassName m_self; \
+    virtual ~ClassName() {} \
+    ClassName(ClassName &&) = default; \
 }; \
 ClassName ClassName::m_self = ClassName(#ClassName, OrderNumber); \
 bool ClassName::exucute()
@@ -35,16 +39,60 @@ bool ClassName::exucute()
 #define TEST_SIMPLE_S(ClassName,SuiteName) \
 class ClassName : public Cpp11_unit::ITest { \
 public: \
-    bool virtual exucute(); \
+    bool virtual exucute_native(); \
+    bool virtual exucute() { \
+        suite = TS_GEN::getSuite<SuiteName>(getSuiteName());\
+        return exucute_native(); \
+    } \
 private: \
-    ClassName(std::string &&name, SuiteSPtr suiteSptr) \
-       : ITest(std::move(name), suiteSptr) \
+    SuiteName* suite; \
+    ClassName(std::string &&name) \
+       : ITest(std::move(name), Cpp11_unit::suite_info::SuiteName()) \
     { \
         TS_GEN::addTest(this); \
     } \
     static ClassName m_self; \
+    virtual ~ClassName() {} \
+    ClassName(ClassName &&) = default; \
 }; \
-ClassName ClassName::m_self = ClassName(#ClassName, SuiteSPtr(new SuiteName(#SuiteName))); \
-bool ClassName::exucute()
+ClassName ClassName::m_self = ClassName(#ClassName); \
+bool ClassName::exucute_native()
+
+#define TEST_SIMPLE_S_N(ClassName,SuiteName,OrderNumber) \
+class ClassName : public Cpp11_unit::ITest { \
+public: \
+    bool virtual exucute_native(); \
+    bool virtual exucute() { \
+        suite = TS_GEN::getSuite<SuiteName>(getSuiteName());\
+        return exucute_native(); \
+    } \
+private: \
+    SuiteName* suite; \
+    ClassName(std::string &&name, unsigned int orderNumber) \
+       : ITest(std::move(name), Cpp11_unit::suite_info::SuiteName(), orderNumber) \
+    { \
+        TS_GEN::addTest(this); \
+    } \
+    static ClassName m_self; \
+    virtual ~ClassName() {} \
+    ClassName(ClassName &&) = default; \
+}; \
+ClassName ClassName::m_self = ClassName(#ClassName, OrderNumber); \
+bool ClassName::exucute_native()
+
+#define SUITE(SuiteName) \
+namespace Cpp11_unit { namespace suite_info { \
+    struct SuiteName : public SuiteInfo  { \
+        SuiteName() : SuiteInfo(#SuiteName) \
+        {} \
+    }; \
+}} \
+class SuiteName : public Cpp11_unit::ISuite { \
+private: \
+    const std::string & getSuiteName() { \
+        static std::string str = #SuiteName; \
+        return str; \
+    } \
+friend TS_GEN; friend Cpp11_unit::SetupWrapper<SuiteName>; 
 
 #endif //TESTS_MACROSES_H_

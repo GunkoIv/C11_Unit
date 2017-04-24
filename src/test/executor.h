@@ -15,22 +15,35 @@ namespace Cpp11_unit {
 
         struct LessTestOrder {
             bool operator() (const ITest *const test1, const ITest *const test2) {
-                if (test1->m_suite == nullptr && test2->m_suite != nullptr) {
+                // if (test1->m_suite == nullptr && test2->m_suite != nullptr) {
+                //     return true;
+                // } else if (test1->m_suite != nullptr && test2->m_suite == nullptr) {
+                //     return false;
+                // } 
+                // if (test1->m_suite != nullptr) {
+                if (test1->m_suite.m_order_num < test2->m_suite.m_order_num) {
                     return true;
-                } else if (test1->m_suite != nullptr && test2->m_suite == nullptr) {
+                } else if (test1->m_suite.m_order_num > test2->m_suite.m_order_num) {
                     return false;
-                } 
-                return 
-                    (test1->m_suite != nullptr && 
-                        (test1->m_suite->m_order_num < test2->m_suite->m_order_num ||
-                            test1->m_suite->m_name < test2->m_suite->m_name
-                        )
-                    ) ||
-                    test1->m_order_num < test2->m_order_num || 
-                    (test1->m_order_num == test2->m_order_num && 
-                        test1->m_name < test2->m_name
-                    )
-                ;
+                }
+                if (test1->m_suite.m_name < test2->m_suite.m_name) {
+                    return true;
+                } else if (test1->m_suite.m_name > test2->m_suite.m_name) {
+                    return false;
+                }
+                // }
+                if (test1->m_order_num < test2->m_order_num) {
+                    return true;
+                } else if (test1->m_order_num > test2->m_order_num) {
+                    return false;
+                }
+                if (test1->m_name < test2->m_name) {
+                    return true;
+                } else if (test1->m_name > test2->m_name) {
+                    return false;
+                }
+                // TODO make it error if it comes to this 
+                return false;
             }
         };
 
@@ -45,16 +58,45 @@ namespace Cpp11_unit {
                 for(auto &test : GLOBAL_tests_ptr) {
                     test->exucute();
                 }
+                if (GLOBAL_suite != nullptr) {
+                    // GLOBAL_suite->teardown();
+                    GLOBAL_suite.reset();
+                }
             }
 
             static void addTest(ITest *test) {
                 if (test != nullptr) {
-                    GLOBAL_tests_ptr.insert  (test);
+                    GLOBAL_tests_ptr.insert(test);
                 }
             }
 
+            template<typename Suite>
+            static Suite * getSuite(const std::string &suiteName) {
+                std::cout << "See to new suite" << std::endl;
+                if (suiteName != GLOBAL_last_suite_name) {
+                    std::cout << "teardown old and create new suite " << std::endl;
+                    // if (GLOBAL_suite != nullptr) {
+                    //     // GLOBAL_suite->teardown();
+                    // }
+                    GLOBAL_suite = std::unique_ptr<ISuite>(new SetupWrapper<Suite>());
+                    GLOBAL_last_suite_name = suiteName;
+                    // GLOBAL_suite->setup();
+                }
+                return static_cast<Suite *>(GLOBAL_suite.get());
+            }
+
+            static std::string GLOBAL_last_suite_name;
+            // static SuiteSPtr<ISuite> GLOBAL_suite;
+            static std::unique_ptr<ISuite> GLOBAL_suite;
+
             static OrderedTests GLOBAL_tests_ptr;
         };        
+
+        template <typename Mock>
+        std::string GeneralTests<Mock>::GLOBAL_last_suite_name = "";
+
+        template <typename Mock>
+        std::unique_ptr<ISuite> GeneralTests<Mock>::GLOBAL_suite = nullptr;
 
         template <typename Mock>
         OrderedTests GeneralTests<Mock>::GLOBAL_tests_ptr = OrderedTests();

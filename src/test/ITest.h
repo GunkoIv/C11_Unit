@@ -25,16 +25,20 @@ namespace Cpp11_unit {
                 , m_order_num(orderNumber)
             {}
 
-            ITest(std::string &&name, Unique<ISuite> &&suite)
+            ITest(std::string &&name, SuiteInfo &&suite)
                 : m_name(std::move(name))
                 , m_suite(std::move(suite))
             {}
 
-            ITest(std::string &&name, Unique<ISuite> &&suite, unsigned int orderNumber)
+            ITest(std::string &&name, SuiteInfo &&suite, unsigned int orderNumber)
                 : m_name(std::move(name))
                 , m_order_num(orderNumber)
                 , m_suite(std::move(suite))
             {}
+
+            ITest(ITest &&) = default;
+
+            virtual ~ITest() = default;
 
             template<typename ...Args>
             void print(Args&& ...args) {
@@ -54,10 +58,14 @@ namespace Cpp11_unit {
                 return m_name;
             }
 
+            const std::string & getSuiteName() {
+                return m_suite.m_name;
+            }
+
         private:
             const std::string m_name;
             const unsigned int m_order_num = Default::defaultOrderNumber;
-            SuiteSPtr m_suite = nullptr;
+            SuiteInfo m_suite;
 
             Unique<IPrinter> m_printer;
             Container<IGenerator> m_generators{};

@@ -28,6 +28,20 @@ namespace Cpp11_unit {
             pass(Args&& ...args) {}
         };
 
+        template<typename ClassToSetup>
+        class SetupWrapper : public ClassToSetup {
+        public:
+            template<typename ...Args>
+            SetupWrapper(Args&& ...args)
+                : ClassToSetup(std::forward<Args>(args)...)
+            {
+                this->setup();
+            }
+            ~SetupWrapper(){
+                this->teardown();
+            }
+        };
+
 } //namespace Cpp11_unit
 
 #endif //TESTS_STRUCTURES_H_

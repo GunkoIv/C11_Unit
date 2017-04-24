@@ -11,27 +11,48 @@ namespace Cpp11_unit {
         class LessTestOrder;
     
         class ISuite {
-        friend LessTestOrder;
+        friend LessTestOrder; 
         public:
+            
+            virtual ~ISuite() {}
 
-            ISuite(std::string &&name)
-                : m_name(std::move(name))
-            {}
-            
-        protected: 
-            
-            const std::string & getSuiteName() {
-                return m_name;
+            ISuite()
+            {
             }
 
+            template<typename ...Args>
+            void print(Args&& ...args) {
+                m_printer->print(std::forward<Args>(args)...);
+            }
+
+            template<typename ...Args>
+            void formatPrint(const std::string &str, Args&& ...args) {
+                m_printer->formatPrint(str, std::forward<Args>(args)...);
+            }
+
+            virtual void setup() {}
+            virtual void teardown() {}
+            
         private:
-            const std::string m_name;
 
             Unique<IPrinter> m_printer;
             Container<IFixture> m_fixtures {};
         };
 
-        using SuiteSPtr = std::unique_ptr<ISuite>;
+        struct SuiteInfo {
+            SuiteInfo()
+            {}
+            SuiteInfo(const std::string& name)
+                : m_name(name)
+            {}
+            SuiteInfo(const std::string& name, unsigned int orderNumber)
+                : m_name(name), m_order_num(orderNumber)
+            {}
+            const std::string m_name = "";
+            const unsigned int m_order_num = Default::defaultOrderNumber;
+        };
+        template<typename Suite = ISuite>
+        using SuiteSPtr = std::shared_ptr<Suite>;
 
 } //namespace Cpp11_unit
 
