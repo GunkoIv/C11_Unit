@@ -15,12 +15,6 @@ namespace Cpp11_unit {
 
         struct LessTestOrder {
             bool operator() (const ITest *const test1, const ITest *const test2) {
-                // if (test1->m_suite == nullptr && test2->m_suite != nullptr) {
-                //     return true;
-                // } else if (test1->m_suite != nullptr && test2->m_suite == nullptr) {
-                //     return false;
-                // } 
-                // if (test1->m_suite != nullptr) {
                 if (test1->m_suite.m_order_num < test2->m_suite.m_order_num) {
                     return true;
                 } else if (test1->m_suite.m_order_num > test2->m_suite.m_order_num) {
@@ -42,8 +36,7 @@ namespace Cpp11_unit {
                 } else if (test1->m_name > test2->m_name) {
                     return false;
                 }
-                // TODO make it error if it comes to this 
-                return false;
+                throw std::logic_error("Something went wrong inside LessTestOrder");
             }
         };
 
@@ -56,10 +49,11 @@ namespace Cpp11_unit {
             static void run() {
                 std::cout << "GLOBAL_tests_ptr.size() = " << GLOBAL_tests_ptr.size() << std::endl;
                 for(auto &test : GLOBAL_tests_ptr) {
-                    test->exucute();
+                    do {
+                        test->exucute();
+                    } while (test->switchGenerator());
                 }
                 if (GLOBAL_suite != nullptr) {
-                    // GLOBAL_suite->teardown();
                     GLOBAL_suite.reset();
                 }
             }
@@ -72,21 +66,17 @@ namespace Cpp11_unit {
 
             template<typename Suite>
             static Suite * getSuite(const std::string &suiteName) {
-                std::cout << "See to new suite" << std::endl;
+                // std::cout << "See to new suite" << std::endl;
                 if (suiteName != GLOBAL_last_suite_name) {
                     std::cout << "teardown old and create new suite " << std::endl;
-                    // if (GLOBAL_suite != nullptr) {
-                    //     // GLOBAL_suite->teardown();
-                    // }
-                    GLOBAL_suite = std::unique_ptr<ISuite>(new SetupWrapper<Suite>());
+                    GLOBAL_suite.reset();
+                    GLOBAL_suite.reset(new SetupWrapper<Suite>());
                     GLOBAL_last_suite_name = suiteName;
-                    // GLOBAL_suite->setup();
                 }
                 return static_cast<Suite *>(GLOBAL_suite.get());
             }
 
             static std::string GLOBAL_last_suite_name;
-            // static SuiteSPtr<ISuite> GLOBAL_suite;
             static std::unique_ptr<ISuite> GLOBAL_suite;
 
             static OrderedTests GLOBAL_tests_ptr;

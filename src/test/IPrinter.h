@@ -4,10 +4,18 @@
 
 #include "Structures.h"
 
+#define TRACE_VAR(var) IPrinter::trace(#var, ":'",var,"'")
+
 namespace Cpp11_unit {
 
         class IPrinter {
         public:
+            template<typename ...Args>
+            static void trace(Args&& ...args) {
+                pass{(std::cout << args, 1)...};
+                std::cerr << '\n';
+            }
+
             template<typename ...Args>
             void print(Args&& ...args) {
                 pass{(std::cout << args, 1)...};

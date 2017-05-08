@@ -1,0 +1,3 @@
+1) replace all 'unsigned int' and 'size_t' to new type without overflow on subb\add
+3) refactoring for sheme with bound generators (and generators in general)
+2) boundary on numbers of generated elements?

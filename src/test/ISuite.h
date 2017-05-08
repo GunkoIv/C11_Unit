@@ -49,7 +49,7 @@ namespace Cpp11_unit {
                 : m_name(name), m_order_num(orderNumber)
             {}
             const std::string m_name = "";
-            const unsigned int m_order_num = Default::defaultOrderNumber;
+            const unsigned int m_order_num = 0;
         };
         template<typename Suite = ISuite>
         using SuiteSPtr = std::shared_ptr<Suite>;

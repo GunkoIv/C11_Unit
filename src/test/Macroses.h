@@ -39,10 +39,10 @@ bool ClassName::exucute()
 #define TEST_SIMPLE_S(ClassName,SuiteName) \
 class ClassName : public Cpp11_unit::ITest { \
 public: \
-    bool virtual exucute_native(); \
+    bool virtual execute_native(); \
     bool virtual exucute() { \
         suite = TS_GEN::getSuite<SuiteName>(getSuiteName());\
-        return exucute_native(); \
+        return execute_native(); \
     } \
 private: \
     SuiteName* suite; \
@@ -56,15 +56,15 @@ private: \
     ClassName(ClassName &&) = default; \
 }; \
 ClassName ClassName::m_self = ClassName(#ClassName); \
-bool ClassName::exucute_native()
+bool ClassName::execute_native()
 
 #define TEST_SIMPLE_S_N(ClassName,SuiteName,OrderNumber) \
 class ClassName : public Cpp11_unit::ITest { \
 public: \
-    bool virtual exucute_native(); \
+    bool virtual execute_native(); \
     bool virtual exucute() { \
         suite = TS_GEN::getSuite<SuiteName>(getSuiteName());\
-        return exucute_native(); \
+        return execute_native(); \
     } \
 private: \
     SuiteName* suite; \
@@ -78,12 +78,12 @@ private: \
     ClassName(ClassName &&) = default; \
 }; \
 ClassName ClassName::m_self = ClassName(#ClassName, OrderNumber); \
-bool ClassName::exucute_native()
+bool ClassName::execute_native()
 
 #define SUITE(SuiteName) \
 namespace Cpp11_unit { namespace suite_info { \
     struct SuiteName : public SuiteInfo  { \
-        SuiteName() : SuiteInfo(#SuiteName) \
+        SuiteName() : SuiteInfo(#SuiteName, Default::defaultOrderNumber) \
         {} \
     }; \
 }} \
@@ -94,5 +94,22 @@ private: \
         return str; \
     } \
 friend TS_GEN; friend Cpp11_unit::SetupWrapper<SuiteName>; 
+
+#define SUITE_N(SuiteName, SuiteNumber) \
+namespace Cpp11_unit { namespace suite_info { \
+    struct SuiteName : public SuiteInfo  { \
+        SuiteName() : SuiteInfo(#SuiteName, SuiteNumber) \
+        {} \
+    }; \
+}} \
+class SuiteName : public Cpp11_unit::ISuite { \
+private: \
+    const std::string & getSuiteName() { \
+        static std::string str = #SuiteName; \
+        return str; \
+    } \
+friend TS_GEN; friend Cpp11_unit::SetupWrapper<SuiteName>; 
+
+#define SUITE_END };
 
 #endif //TESTS_MACROSES_H_

@@ -8,10 +8,14 @@
 #include <deque>
 #include <set>
 
+#define UNUSED_VAR(expr) { (void)(expr); } 
+
 namespace Cpp11_unit {
 
         template<typename T>
         using Container = std::deque<T>;
+        
+        using u_int = unsigned int;
 
         template<typename T>
         using OrderContainer = std::set<T>;

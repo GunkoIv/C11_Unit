@@ -6,13 +6,13 @@
 #include "ISuite.h"
 #include "IPrinter.h"
 #include "IFixture.h"
+#include "IGenerator.h"
 
 namespace Cpp11_unit {
 
-        class IGenerator {};
         class LessTestOrder;
 
-        class ITest {
+        class ITest : public GeneratorsKeeper {
         friend LessTestOrder;
         public:
 
@@ -68,7 +68,6 @@ namespace Cpp11_unit {
             SuiteInfo m_suite;
 
             Unique<IPrinter> m_printer;
-            Container<IGenerator> m_generators{};
             Container<IFixture> m_fixtures {};
         };
 
