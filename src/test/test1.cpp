@@ -138,7 +138,7 @@ public:
     };
 
     // CLTableView(TableBorders borders, unsigned int maxCharWidth = 80);
-    // CLTableView(unsigned int maxCharWidth = 80);
+    // CLTableView(unsigned int maxCharWidth = 80); little
     CLTableView(const Table &table);
 
     void printTo(std::ostream &cout);
