@@ -19,7 +19,7 @@ namespace {
         template <typename U>
         static long test(U* x);
      
-        static const bool value = sizeof(test<T>(0)) == 1;
+        static const bool value = sizeof(test<std::remove_reference<T>::type>(0)) == 1;
     };
 
     template <typename T>
@@ -31,7 +31,7 @@ namespace {
         template <typename U>
         static long test(U* x);
      
-        static const bool value = sizeof(test<T>(0)) == 1;
+        static const bool value = sizeof(test<T>(std::remove_reference<T>::type)) == 1;
     };
 
 } // unname namespace
@@ -42,7 +42,7 @@ struct ToString {
     ToString(Args&& ...args)
         : ss()
     {
-        add(args...);
+        add(std::forward<Args>(args)...);
     }
 
     operator std::string() const {
@@ -53,18 +53,18 @@ private:
     void add() {}
 
     template<class FirstArgument, class ... Args> 
-    void add(const FirstArgument& first, Args& ...args) {
-        addElem(first);
-        add(args...);
+    void add(FirstArgument&& first, Args&& ...args) {
+        addElem(std::forawrd<FirstArgument>(first));
+        add(std::forward<Args>(args)...);
     }
 
-    void addElem(const std::string& str) {
-        ss << str;
+    void addElem(std::string&& str) {
+        ss << std::forward<std::string>(str);
     }
 
     template <typename T>
-    typename std::enable_if<!has_iterator<T>::value, void>::type addElem(const T& x) {
-        ss << x;
+    typename std::enable_if<!has_iterator<T>::value, void>::type addElem(T&& x) {
+        ss << std::forward<T>(x);
     }
 
     template <typename T>

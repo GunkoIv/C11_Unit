@@ -66,7 +66,7 @@ TEST_SIMPLE_S(MyTest, FirstSuite) {
 }
 
 TEST_SIMPLE_S(TestGen1, FirstSuite) {
-    GENERATOR(randStr, Generators::StringGen, -1, 2, 5);
+    GENERATOR(randStr, Generators::StringGen, 1, 2, 5);
     BOUND_GENERATOR(randStr, rangeNumber, Generators::Range, 2);
     BOUND_GENERATOR(rangeNumber, rangeChar, Generators::RangeType<char>, 'a', 'e');
     formatPrint("First Test with generator! EEaarrr baby!! '", getTestName(), "' Generated str: ", randStr);
@@ -81,104 +81,37 @@ TEST_SIMPLE_S(TestSecondSuite, SecondSuite) {
     return true;
 }
 
-class CLTableView;
+#include "../toString.h"
+#include <vector>
+#include <map>
 
-class ITableForView {
-public:
-
-
-protected:
-    ITableForView() = default;
-
-
-private:
-// friend CLTableView;
-};
-
-class Table : private ITableForView {
-public:
-
-    Table() = default;
-
-    void addCell(std::string &&str);
-    void addCell(const std::string &str);
-    // if makeFit == true then: make current row fir with prev row cell count
-    void addNewRow(bool makeFit = false);
-};
-
-
-void Table::addCell(std::string &&str) {
-
+TEST_SIMPLE(Test_ToString) {
+    formatPrint(std::string(ToString(
+        std::vector<int>(5, 15), " Baby", true, std::map<std::string, int>{{"zbc", 10}, {"abc", 1}}
+    )));
+    return true;
 }
 
-void Table::addCell(const std::string &str) {
-
-}
-
-void Table::addNewRow(bool makeFit) {
-
-}
-
-class CLTableView {
-public:
-    struct Border {
-        char horizontal;
-        char vertical;
-        char cross;
-
-        static constexpr Border Default() {
-            return {'|', '-', '-'};
-        }
-    };
-
-    struct TableBorders {
-        unsigned int spaceToBorder;
-        Border outer;    
-        Border inner;    
-    };
-
-    // CLTableView(TableBorders borders, unsigned int maxCharWidth = 80);
-    // CLTableView(unsigned int maxCharWidth = 80);
-    CLTableView(const Table &table);
-
-    void printTo(std::ostream &cout);
-
-private:
-    const ITableForView & m_table;
-    const TableBorders m_borders;
-};
-
-CLTableView::CLTableView(const Table &table)
-    : m_table(table) 
-    , m_borders{0, Border::Default(), Border::Default()}
-{
-
-}
-// CLTableView::CLTableView(TableBorders borders, unsigned int maxCharWidth)
-//     : m_borders(borders)
-//     // ,
-// {
-
-// }
-
-// CLTableView::CLTableView(unsigned int maxCharWidth)
-//     : m_borders{0, Border::Default(), Border::Default()}
-//     // ,
-// {
-
-// }
-
-void CLTableView::printTo(std::ostream &cout) {
-
-}
+#include "../tables/tables.h"
 
 TEST_SIMPLE_N(Test_CLTable, 0) {
     GENERATOR(rangeNumber, Generators::Range, 2, 5, 5);
-    Table genTable;
-    CLTableView table0(genTable);
+    tables::Table genTable;
+    tables::CLTableView tableCLview(genTable);
+
+    genTable.addCell("Column 1");
+    genTable.addCell("Column 2");
+    genTable.nextRow();
+    genTable.addCell("SubColumn 1");
+    genTable.addSubCell("SubColumn 2");
+    genTable.addCell("SubColumn 1");
+    genTable.addSubCell("SubColumn 2");
+    genTable.nextRow();
+    genTable.addCell("FirstCell");
+    genTable.nextRow(true);
     // CLTableView table1(160);
     // CLTableView table2(CLTableView::TableBorders
-        {2, CLTableView::Border::Default(), CLTableView::Border{'#', '_', '&'}}
-    );
+        // {2, tables::Border::Default(), tables::Border{'#', '_', '&'}}
+    // );
     return true;
 }
