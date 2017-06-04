@@ -40,15 +40,22 @@ namespace {
 
 struct ToString {
 
+    ToString(ToString &&) = default;
+
     template<class ... Args> 
     ToString(Args&& ...args)
         : ss()
     {
+        ss << std::boolalpha;
         add(std::forward<Args>(args)...);
     }
 
     operator std::string() const {
         return ss.str();
+    }
+
+    operator std::stringbuf*() const {
+        return ss.rdbuf();
     }
 
 private:
@@ -64,10 +71,6 @@ private:
         ss << std::forward<std::string>(str);
     }
 
-    /*template <typename T>
-    decltype( 
-        begin(std::declval<T>()), end(std::declval<T>()), 
-    void())*/
     template <typename T>
     typename std::enable_if<has_iterator<T>::value && !is_map<T>::value, void>::type 
     addElem(T&& container) {
@@ -77,13 +80,9 @@ private:
             (isFirst) ? (isFirst=false) : (ss << ", ", true);
             ss << "'" << elem << "'";
         }
-        ss << "}.";
+        ss << "}";
     }
 
-    /*template <typename T>
-    decltype( 
-        std::stringstream << x, 
-    void())*/
     template <typename T>
     typename std::enable_if<!has_iterator<T>::value, void>::type addElem(T&& x) {
         ss << std::forward<T>(x);
@@ -94,10 +93,6 @@ private:
     //     static_assert(false, "unable to convert input object to string type");
     // }
 
-    /*template <typename T>
-    decltype( 
-        begin(std::declval<T>()), end(std::declval<T>()), T::mapped_type, 
-    void())*/
     template <typename T>
     typename std::enable_if<is_map<T>::value, void>::type
     addElem(const T& map) {
@@ -107,7 +102,7 @@ private:
             (isFirst) ? (isFirst=false) : (ss << ", ", true);
             ss << "'" << elem.first << "'" << " : '" << elem.second << "'";
         }
-        ss << "}.";
+        ss << "}";
     }
 
     std::stringstream ss;

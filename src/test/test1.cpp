@@ -75,9 +75,14 @@ TEST_SIMPLE_S(TestGen1, FirstSuite) {
     return true;
 }
 
+#include "../profiler.h"
+
 TEST_SIMPLE_S(TestSecondSuite, SecondSuite) {
     GENERATOR(rangeNumber, Generators::Range, 2, 5, 5);
     formatPrint("Test of second Suite! EEaarrr baby!! '", getSuiteName(), "' Start", rangeNumber);
+    std::vector<int> vectorByka(5, 15);
+    TRACE_VAR(vectorByka);
+    TRACE_VAR(rangeNumber);
     return true;
 }
 
@@ -86,9 +91,15 @@ TEST_SIMPLE_S(TestSecondSuite, SecondSuite) {
 #include <map>
 
 TEST_SIMPLE(Test_ToString) {
-    formatPrint(std::string(ToString(
-        std::vector<int>(5, 15), " Baby", true, std::map<std::string, int>{{"zbc", 10}, {"abc", 1}}
-    )));
+    formatPrint(ToString(
+        std::vector<int>(5, 15), " Baby ", true, std::map<std::string, int>{{"zbc", 10}, {"abc", 1}}, 10.45, 0xff
+    ));
+    return true;
+}
+
+
+TEST_SIMPLE_S(Test_Asserts, FirstSuite) {
+    
     return true;
 }
 

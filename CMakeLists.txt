@@ -14,9 +14,10 @@ include_directories(
     /src/test
 )
 
-add_executable(${MAIN_TARGET} ${SOURCE_MAIN})
+add_executable(${MAIN_TARGET} ${SOURCE_MAIN} src/profiler.cpp)
 
 add_definitions(-DTESTS)
+add_definitions(-DTRACING)
 
 target_link_libraries(
     ${MAIN_TARGET}
