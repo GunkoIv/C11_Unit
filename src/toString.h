@@ -71,6 +71,10 @@ private:
         ss << std::forward<std::string>(str);
     }
 
+    void addElem(const std::string& str) {
+        ss << str;
+    }
+
     template <typename T>
     typename std::enable_if<has_iterator<T>::value && !is_map<T>::value, void>::type 
     addElem(T&& container) {

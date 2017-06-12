@@ -17,8 +17,7 @@ namespace Cpp11_unit {
             virtual ~ISuite() {}
 
             ISuite()
-            {
-            }
+            {}
 
             template<typename ...Args>
             void print(Args&& ...args) {
@@ -39,18 +38,6 @@ namespace Cpp11_unit {
             Container<IFixture> m_fixtures {};
         };
 
-        struct SuiteInfo {
-            SuiteInfo()
-            {}
-            SuiteInfo(const std::string& name)
-                : m_name(name)
-            {}
-            SuiteInfo(const std::string& name, unsigned int orderNumber)
-                : m_name(name), m_order_num(orderNumber)
-            {}
-            const std::string m_name = "";
-            const unsigned int m_order_num = 0;
-        };
         template<typename Suite = ISuite>
         using SuiteSPtr = std::shared_ptr<Suite>;
 

@@ -2,74 +2,97 @@
 #ifndef TESTS_ITEST_H_
 #define TESTS_ITEST_H_
 
+#include "TestsKeeper.h"
 #include "Structures.h"
-#include "ISuite.h"
 #include "IPrinter.h"
 #include "IFixture.h"
 #include "IGenerator.h"
+#include "Assert.h"
 
 namespace Cpp11_unit {
 
-        class LessTestOrder;
+    class LessTestOrder;
 
-        class ITest : public GeneratorsKeeper {
-        friend LessTestOrder;
-        public:
+    class ITest : public GeneratorsKeeper {
+    friend LessTestOrder;
+    public:
 
-            ITest(std::string &&name)
-                : m_name(std::move(name))
-            {}
+        ITest(std::string &&name)
+            : m_name(std::move(name))
+        {}
 
-            ITest(std::string &&name, unsigned int orderNumber)
-                : m_name(std::move(name))
-                , m_order_num(orderNumber)
-            {}
+        ITest(std::string &&name, unsigned int orderNumber)
+            : m_name(std::move(name))
+            , m_order_num(orderNumber)
+        {
+            TRACE_PRINT("What's UP?");
+        }
 
-            ITest(std::string &&name, SuiteInfo &&suite)
-                : m_name(std::move(name))
-                , m_suite(std::move(suite))
-            {}
+        ITest(std::string &&name, SuiteInfo &&suite)
+            : m_name(std::move(name))
+            , m_suiteInfo(std::move(suite))
+        {}
 
-            ITest(std::string &&name, SuiteInfo &&suite, unsigned int orderNumber)
-                : m_name(std::move(name))
-                , m_order_num(orderNumber)
-                , m_suite(std::move(suite))
-            {}
+        ITest(std::string &&name, SuiteInfo &&suite, unsigned int orderNumber)
+            : m_name(std::move(name))
+            , m_suiteInfo(std::move(suite))
+            , m_order_num(orderNumber)
+        {}
 
-            ITest(ITest &&) = default;
+        ITest(ITest &&) = default;
+        virtual ~ITest() = default;
 
-            virtual ~ITest() = default;
+        template<typename ...Args>
+        void print(Args&& ...args) {
+            m_printer->print(std::forward<Args>(args)...);
+        }
 
-            template<typename ...Args>
-            void print(Args&& ...args) {
-                m_printer->print(std::forward<Args>(args)...);
+        template<typename ...Args>
+        void formatPrint(const std::string &str, Args&& ...args) {
+            m_printer->formatPrint(str, std::forward<Args>(args)...);
+        }
+
+        TestResult virtual execute() {
+            try {
+                TRACE_PRINT("Hi there: ", getSuiteName(), ":", 
+                    CLPrint<CLColor::YELLOW>(getTestName()), ":", m_order_num, "!");
+                execute_body();
+                TRACE_PRINT("After '",getTestName(), "' body");
+            } catch(TestResult &assertError) {
+                return TestResult::AssertError().unite(
+                    std::move(assertError)
+                );
             }
-
-            template<typename ...Args>
-            void formatPrint(const std::string &str, Args&& ...args) {
-                m_printer->formatPrint(str, std::forward<Args>(args)...);
-            }
-
-            bool virtual exucute() = 0;
+            // TODO Expect
+            return TestResult(true, '\0');
+        }
         
-        protected: 
+    protected: 
 
-            const std::string & getTestName() {
-                return m_name;
-            }
+        void registerTests() {
+            TRACE_PRINT("S Register");
+            TS_GEN_ENSURE_TESTS_STORE_CREATED;
+            TS_GEN_ADD_TEST(this);
+        }
 
-            const std::string & getSuiteName() {
-                return m_suite.m_name;
-            }
+        void virtual execute_body() = 0;
 
-        private:
-            const std::string m_name;
-            const unsigned int m_order_num = Default::defaultOrderNumber;
-            SuiteInfo m_suite;
+        const std::string & getTestName() {
+            return m_name;
+        }
 
-            Unique<IPrinter> m_printer;
-            Container<IFixture> m_fixtures {};
-        };
+        const std::string & getSuiteName() {
+            return m_suiteInfo.name;
+        }
+
+    private:
+        const std::string m_name;
+        const SuiteInfo m_suiteInfo;
+        const unsigned int m_order_num = Default::defaultOrderNumber;
+
+        Unique<IPrinter> m_printer;
+        Container<IFixture> m_fixtures {};
+    };
 
 } //namespace Cpp11_unit
 

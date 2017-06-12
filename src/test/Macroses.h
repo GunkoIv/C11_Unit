@@ -2,113 +2,93 @@
 #ifndef TESTS_MACROSES_H_
 #define TESTS_MACROSES_H_
 
-#define TEST_SIMPLE(ClassName) \
+#define TEST(ClassName) \
 class ClassName : public Cpp11_unit::ITest { \
-public: \
-    bool virtual exucute(); \
-private: \
+    void virtual execute_body() override; \
     ClassName(std::string &&name) \
        : ITest(std::move(name)) \
     { \
-        TS_GEN::addTest(this); \
+       registerTests(); \
     } \
     static ClassName m_self; \
     virtual ~ClassName() {} \
     ClassName(ClassName &&) = default; \
 }; \
 ClassName ClassName::m_self = ClassName(#ClassName); \
-bool ClassName::exucute()
+void ClassName::execute_body()
 
-#define TEST_SIMPLE_N(ClassName,OrderNumber) \
+#define TEST_N(ClassName,OrderNumber) \
 class ClassName : public Cpp11_unit::ITest { \
-public: \
-    bool virtual exucute(); \
-private: \
+    void virtual execute_body() override; \
     ClassName(std::string &&name, unsigned int orderNumber) \
        : ITest(std::move(name), orderNumber) \
     { \
-        TS_GEN::addTest(this); \
+       registerTests(); \
     } \
     static ClassName m_self; \
     virtual ~ClassName() {} \
     ClassName(ClassName &&) = default; \
 }; \
 ClassName ClassName::m_self = ClassName(#ClassName, OrderNumber); \
-bool ClassName::exucute()
+void ClassName::execute_body()
 
-#define TEST_SIMPLE_S(ClassName,SuiteName) \
-class ClassName : public Cpp11_unit::ITest { \
-public: \
-    bool virtual execute_native(); \
-    bool virtual exucute() { \
-        suite = TS_GEN::getSuite<SuiteName>(getSuiteName());\
-        return execute_native(); \
-    } \
-private: \
-    SuiteName* suite; \
+#define TEST_S(ClassName,SuiteName) \
+class ClassName : public Cpp11_unit::ITestSuite<SuiteName> { \
+    void virtual execute_body() override; \
     ClassName(std::string &&name) \
-       : ITest(std::move(name), Cpp11_unit::suite_info::SuiteName()) \
+       : ITestSuite<SuiteName>(std::move(name), \
+        Cpp11_unit::SuiteInfo(SuiteName::getSuiteName(), SuiteName::getOrderNumber())) \
     { \
-        TS_GEN::addTest(this); \
+       registerTests(); \
     } \
     static ClassName m_self; \
     virtual ~ClassName() {} \
     ClassName(ClassName &&) = default; \
 }; \
 ClassName ClassName::m_self = ClassName(#ClassName); \
-bool ClassName::execute_native()
+void ClassName::execute_body()
 
-#define TEST_SIMPLE_S_N(ClassName,SuiteName,OrderNumber) \
-class ClassName : public Cpp11_unit::ITest { \
-public: \
-    bool virtual execute_native(); \
-    bool virtual exucute() { \
-        suite = TS_GEN::getSuite<SuiteName>(getSuiteName());\
-        return execute_native(); \
-    } \
-private: \
-    SuiteName* suite; \
+#define TEST_S_N(ClassName,SuiteName,OrderNumber) \
+class ClassName : public Cpp11_unit::ITestSuite<SuiteName> { \
+    void virtual execute_body() override; \
     ClassName(std::string &&name, unsigned int orderNumber) \
-       : ITest(std::move(name), Cpp11_unit::suite_info::SuiteName(), orderNumber) \
+       : ITestSuite<SuiteName>(std::move(name), \
+        Cpp11_unit::SuiteInfo(SuiteName::getSuiteName(), SuiteName::getOrderNumber()), orderNumber) \
     { \
-        TS_GEN::addTest(this); \
+       registerTests(); \
     } \
     static ClassName m_self; \
     virtual ~ClassName() {} \
     ClassName(ClassName &&) = default; \
 }; \
 ClassName ClassName::m_self = ClassName(#ClassName, OrderNumber); \
-bool ClassName::execute_native()
+void ClassName::execute_body()
+
+#define SUITE_N(SuiteName, SuiteOrderNumber) \
+class SuiteName : public Cpp11_unit::ISuite { \
+public: \
+    static const std::string & getSuiteName() { \
+        static std::string str = #SuiteName; \
+        return str; \
+    } \
+    static unsigned int getOrderNumber() { \
+        return SuiteOrderNumber; \
+    } \
+/*friend TS_GEN; */friend Cpp11_unit::SetupWrapper<SuiteName>; \
+private:
 
 #define SUITE(SuiteName) \
-namespace Cpp11_unit { namespace suite_info { \
-    struct SuiteName : public SuiteInfo  { \
-        SuiteName() : SuiteInfo(#SuiteName, Default::defaultOrderNumber) \
-        {} \
-    }; \
-}} \
 class SuiteName : public Cpp11_unit::ISuite { \
-private: \
-    const std::string & getSuiteName() { \
+public: \
+    static const std::string & getSuiteName() { \
         static std::string str = #SuiteName; \
         return str; \
     } \
-friend TS_GEN; friend Cpp11_unit::SetupWrapper<SuiteName>; 
-
-#define SUITE_N(SuiteName, SuiteNumber) \
-namespace Cpp11_unit { namespace suite_info { \
-    struct SuiteName : public SuiteInfo  { \
-        SuiteName() : SuiteInfo(#SuiteName, SuiteNumber) \
-        {} \
-    }; \
-}} \
-class SuiteName : public Cpp11_unit::ISuite { \
-private: \
-    const std::string & getSuiteName() { \
-        static std::string str = #SuiteName; \
-        return str; \
+    static unsigned int getOrderNumber() { \
+        return Cpp11_unit::Default::defaultOrderNumber; \
     } \
-friend TS_GEN; friend Cpp11_unit::SetupWrapper<SuiteName>; 
+/*friend TS_GEN; */friend Cpp11_unit::SetupWrapper<SuiteName>; \
+private:
 
 #define SUITE_END };
 

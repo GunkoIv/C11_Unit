@@ -18,7 +18,7 @@ namespace Cpp11_unit {
 
             template<typename ...Args>
             void formatPrint(const std::string &str, Args&& ...args) {
-                std::cerr << CLPrint<CLColor::RED>("Some format printing ");
+                std::cerr << CLPrint<CLColor::RED>("Some format printing ") << str;
                 pass{(std::cout << args, 1)...};
                 std::cerr << '\n';
             }

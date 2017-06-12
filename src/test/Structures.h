@@ -7,10 +7,13 @@
 #include <list>
 #include <deque>
 #include <set>
+#include "../profiler.h"
 
 #define UNUSED_VAR(expr) { (void)(expr); } 
 
 namespace Cpp11_unit {
+
+        struct Mock {};
 
         template<typename T>
         using Container = std::deque<T>;
@@ -23,8 +26,25 @@ namespace Cpp11_unit {
         template<typename T>
         using Unique = std::unique_ptr<T>;
 
+
         struct Default {
             static constexpr unsigned int defaultOrderNumber = 100;
+        };
+
+
+        struct SuiteInfo {
+            SuiteInfo() = default;
+
+            SuiteInfo(const std::string& name)
+                : name(name)
+            {}
+
+            SuiteInfo(const std::string& name, unsigned int orderNumber)
+                : name(name), order_num(orderNumber)
+            {}
+
+            const std::string name = "";
+            const unsigned int order_num = Default::defaultOrderNumber + 1;
         };
 
         struct pass {
