@@ -59,12 +59,18 @@ namespace Cpp11_unit {
                 execute_body();
                 TRACE_PRINT("After '",getTestName(), "' body");
             } catch(TestResult &assertError) {
-                return TestResult::AssertError().unite(
-                    std::move(assertError)
-                );
+                return std::move(assertError);
             }
             // TODO Expect
-            return TestResult(true, '\0');
+            return std::move(TestResult::Good());
+        }
+
+        const std::string & getTestName() {
+            return m_name;
+        }
+
+        const std::string & getSuiteName() {
+            return m_suiteInfo.name;
         }
         
     protected: 
@@ -76,14 +82,6 @@ namespace Cpp11_unit {
         }
 
         void virtual execute_body() = 0;
-
-        const std::string & getTestName() {
-            return m_name;
-        }
-
-        const std::string & getSuiteName() {
-            return m_suiteInfo.name;
-        }
 
     private:
         const std::string m_name;

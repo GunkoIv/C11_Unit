@@ -3,7 +3,8 @@
 #include "executor.h"
 
 int main(int argc, char** argv) {
-    std::cout << "Programm first step!!!"<< std::endl;
-    TESTS_START();
-    return EXIT_SUCCESS;
+    TRACE_PRINT("Programm first step!!!");
+    auto programExitCode = TESTS_EXECUTE();
+    TRACE_VAR(programExitCode);
+    return programExitCode;
 }

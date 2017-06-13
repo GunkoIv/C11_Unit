@@ -7,13 +7,39 @@
 #include <list>
 #include <deque>
 #include <set>
+#include <cstring>
 #include "../profiler.h"
 
 #define UNUSED_VAR(expr) { (void)(expr); } 
+#define CODE_INFO Cpp11_unit::CodeInfo{__FILE__, __LINE__}
 
 namespace Cpp11_unit {
 
         struct Mock {};
+
+        using c_char_ar = const char * const;
+
+        struct CodeInfo {
+            c_char_ar file;
+            const u_int line;
+            // CodeInfo() = default;
+            // CodeInfo(CodeInfo &&) = default;
+            // CodeInfo(u_int line, const char * const file) 
+            //     : assertCodeLine(line)
+            //     , assertCodeFile(file)
+            // {}
+            void printTo(std::ostream &out, bool useShortFileName = true) {
+                out << "File: ";
+                if (useShortFileName) {
+                    c_char_ar partFileName = std::strrchr(file, '/');
+                    c_char_ar printName = (partFileName != nullptr) ? (partFileName + 1) : (file);
+                    out << printName;
+                } else {
+                    out << file;
+                }
+                out << ':' << line;
+            }
+        };
 
         template<typename T>
         using Container = std::deque<T>;

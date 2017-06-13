@@ -11,34 +11,39 @@
 #define TOKENPASTE2(x, y) TOKENPASTE(x, y)
 // TODO for many compilers can be used __COUNTER__ instead __LINE__ 
 #define ASSERT(Expr) Cpp11_unit::AssertCheckHelper TOKENPASTE2(Assert, __LINE__) = \
-    Cpp11_unit::TestResult(Expr, #Expr)
+    Cpp11_unit::TestResult(Expr, "ASSERT FAULT", #Expr, CODE_INFO)
 
 namespace Cpp11_unit {
 
 class TestResult {
 public:
-    explicit TestResult(bool result, const char * const str) {
+
+    static TestResult Good() {
+        TestResult noError{};
+        return noError;
+    }
+
+    explicit TestResult(bool result, c_char_ar desc, c_char_ar expr, CodeInfo codeInfo)
+    {
         if (! result) {
             m_isBad = true;
-            m_description << CLPrint<CLColor::RED>(str);
+            codeInfo.printTo(m_description);
+            m_description << '\n' << CLPrint<CLColor::RED>(desc) << ": " 
+                << CLPrint<CLColor::RED>(expr);
         }
     }
 
-    TestResult(TestResult&& result, const char * const str) {
-        
+    explicit TestResult(TestResult&& result, c_char_ar desc, c_char_ar expr, CodeInfo codeInfo)
+    {
+        if (result.m_isBad) {
+            m_isBad = true;
+            codeInfo.printTo(m_description);
+            m_description << '\n' << CLPrint<CLColor::RED>(desc) << ": " 
+                << result.m_description.str();
+        }
     }
 
-    ~TestResult() = default;
-
-    static TestResult AssertError() {
-        TestResult assertError("ASSERT FAULT:");
-        return assertError;
-    }
-
-    static TestResult ExpectError() {
-        TestResult expectError("EXPECT FAULT:");
-        return expectError;
-    }
+    // ~TestResult() = default;
 
     TestResult && unite(TestResult&& other) {
         m_isBad = m_isBad || other.m_isBad;
@@ -67,22 +72,18 @@ public:
         return std::move(*this);
     }
 
-    // TestResult(TestResult &&) = default;
     TestResult(TestResult &&other)
         : m_description(std::move(other.m_description))
         , m_isBad(other.m_isBad)
     {
         if (other.m_isAddedUserInfo) {
-            m_description << "\"\n";
+            m_description << '\"';
+            // m_description << "\"\n";
         }
     }
     
 private:
-    TestResult(const char * const str)
-        : m_isBad(true)
-    {
-        m_description << CLPrint<CLColor::RED>(str) << "\n";
-    }
+    TestResult() = default;
 
     std::stringstream m_description{};
     bool m_isAddedUserInfo = false;
