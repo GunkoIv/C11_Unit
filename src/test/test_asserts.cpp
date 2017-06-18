@@ -7,13 +7,14 @@
 formatPrint("Lets see file:", CODE_INFO.file, " ANd line:", CODE_INFO.line);\
 t.printTo(std::cerr, true);t.printTo(std::cout, false);std::cout<<std::endl;}
 
+
 TEST_N(Asserts, 200) {
     // CHECK_CODE_INFO;
     ASSERT(2 != 5) << 0 << "It's fine I think";
-    ASSERT(3 == 5 || 4 == 5/* || true*/) << "It's may be wrong actualy";
+    ASSERT(3 == 5 || 4 == 5 || true) << "It's may be wrong actualy";
     // ASSERT(3 == 5) << std::make_pair(3,2) << " Pretty compile error "; TODO
-
-    // ASSERT(3 <LESS> 2) << "check <LESS>";
+    // using namespace Cpp11_unit;
+    ASSERT(3*2 <LESS> 7-1) << "check working <LESS>";
 
     // ASSERT(true <OR> false -AND- false) << "Try that in other frameworks for test:)";
     // ASSERT(false <NE> true);

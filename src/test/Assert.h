@@ -28,8 +28,8 @@ public:
         if (! result) {
             m_isBad = true;
             codeInfo.printTo(m_description);
-            m_description << '\n' << CLPrint<CLColor::RED>(desc) << ": " 
-                << CLPrint<CLColor::RED>(expr);
+            m_description << '\n' << CLPrint<CLColor::RED>(desc) << ": " <<
+                CLPrint<CLColor::RED>(expr);
         }
     }
 
@@ -37,9 +37,10 @@ public:
     {
         if (result.m_isBad) {
             m_isBad = true;
+            TRACE_PRINT("Hello", expr);
             codeInfo.printTo(m_description);
-            m_description << '\n' << CLPrint<CLColor::RED>(desc) << ": " 
-                << result.m_description.str();
+            m_description << '\n' << CLPrint<CLColor::RED>(desc) << ": " << expr << /*'\n' <<*/ 
+                CLPrint<CLColor::RED>(result.m_description.str());
         }
     }
 
@@ -51,7 +52,7 @@ public:
         return std::move(*this);
     }
 
-    bool isBad() const {
+    bool & isBad() /*const*/ {
         return m_isBad;
     }
 
@@ -64,7 +65,8 @@ public:
     TestResult && operator << (T&& val) {
         if (m_isBad) {
             if ( ! m_isAddedUserInfo) {
-                m_description << "\nUser Info: \"";
+                m_description << "\n\"";
+                // m_description << "\nUser Info: \"";
                 m_isAddedUserInfo = true;
             }
             m_description << std::forward<T>(val);
@@ -101,6 +103,52 @@ public:
     // "variable ‘Assert104’ set but not used" which occur when explore ASSERT macros
     ~AssertCheckHelper() {}   
 };
+
+
+class less_op {
+public:
+    // less_op();
+    // ~less_op();
+
+};
+
+#define LESS Cpp11_unit::less_op{} 
+
+template<typename Left>
+struct HalfCheckResult{
+    
+    Left && m_leftOjbRef;
+public:
+    
+    HalfCheckResult(Left &&leftObj) 
+        : m_leftOjbRef(std::move(leftObj))
+    {}
+    
+};
+
+template<typename Left>
+HalfCheckResult<Left> operator < (Left &&left, less_op /*less*/) {
+    return HalfCheckResult<Left>(std::move(left));
+}
+
+template<typename Left, typename Right>
+void named_op_exec(Left &&left, Right &&right, TestResult &result) {
+    TRACE_VAR(left);
+    TRACE_VAR(right);
+    if (right <= left) {
+        result.isBad() = true;
+        TRACE_VAR(result.isBad());
+    }
+    result << left << " < " << right;
+}
+
+template<typename Left, typename Right>
+TestResult operator > (HalfCheckResult<Left> &&left, Right &&right) {
+    auto result = TestResult::Good();
+    named_op_exec(std::move(left.m_leftOjbRef), std::move(right), result);
+    result << '\"';
+    return result;
+}
 
 } //namespace Cpp11_unit
 
