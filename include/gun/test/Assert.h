@@ -1,6 +1,5 @@
-// Кодировка utf-8.
-#ifndef TESTS_ASSERT_H_
-#define TESTS_ASSERT_H_
+#ifndef GUN_TEST_ASSERT_H_
+#define GUN_TEST_ASSERT_H_
 
 #include <string>
 #include "Structures.h"
@@ -10,10 +9,10 @@
 #define TOKENPASTE(x, y) x ## y
 #define TOKENPASTE2(x, y) TOKENPASTE(x, y)
 // TODO for many compilers can be used __COUNTER__ instead __LINE__ 
-#define ASSERT(Expr) Cpp11_unit::AssertCheckHelper TOKENPASTE2(Assert, __LINE__) = \
-    Cpp11_unit::TestResult(Expr, "ASSERT FAULT", #Expr, CODE_INFO)
+#define ASSERT(Expr) gun::test::AssertCheckHelper TOKENPASTE2(Assert, __LINE__) = \
+    gun::test::TestResult(Expr, "ASSERT FAULT", #Expr, CODE_INFO)
 
-namespace Cpp11_unit {
+namespace gun { namespace test {
 
 class TestResult {
 public:
@@ -35,7 +34,7 @@ public:
 
     explicit TestResult(TestResult&& result, c_char_ar desc, c_char_ar expr, CodeInfo codeInfo)
     {
-        if (result.m_isBad) {
+        if (result.isBad()) {
             m_isBad = true;
             TRACE_PRINT("Hello", expr);
             codeInfo.printTo(m_description);
@@ -104,35 +103,29 @@ public:
     ~AssertCheckHelper() {}   
 };
 
+template<class D>struct make_operator{};
 
-class less_op {
-public:
-    // less_op();
-    // ~less_op();
+template<class T, char, class O> struct HalfCheckResult { T&& m_lhs; };
 
-};
-
-#define LESS Cpp11_unit::less_op{} 
-
-template<typename Left>
-struct HalfCheckResult{
-    
-    Left && m_leftOjbRef;
-public:
-    
-    HalfCheckResult(Left &&leftObj) 
-        : m_leftOjbRef(std::move(leftObj))
-    {}
-    
-};
-
-template<typename Left>
-HalfCheckResult<Left> operator < (Left &&left, less_op /*less*/) {
-    return HalfCheckResult<Left>(std::move(left));
+template<class Lhs, class Op>
+HalfCheckResult<Lhs, '<', Op> operator < (Lhs&& lhs, make_operator<Op>) {
+  return {std::forward<Lhs>(lhs)};
 }
 
+template<class Lhs, class Op, class Rhs>
+TestResult operator > (HalfCheckResult<Lhs, '<', Op> && lhs, Rhs && rhs) {
+  auto result = TestResult::Good();
+  named_op_exec(std::forward<Lhs>(lhs.m_lhs), Op{}, std::forward<Rhs>(rhs), result);
+  result << '\"';
+  return result;
+}
+
+
+struct less_op {};
+#define LESS gun::test::make_operator<gun::test::less_op> less 
+
 template<typename Left, typename Right>
-void named_op_exec(Left &&left, Right &&right, TestResult &result) {
+void named_op_exec(Left &&left, less_op /**/, Right &&right, TestResult &result) {
     TRACE_VAR(left);
     TRACE_VAR(right);
     if (right <= left) {
@@ -142,14 +135,6 @@ void named_op_exec(Left &&left, Right &&right, TestResult &result) {
     result << left << " < " << right;
 }
 
-template<typename Left, typename Right>
-TestResult operator > (HalfCheckResult<Left> &&left, Right &&right) {
-    auto result = TestResult::Good();
-    named_op_exec(std::move(left.m_leftOjbRef), std::move(right), result);
-    result << '\"';
-    return result;
-}
+} } //namespace test and gun
 
-} //namespace Cpp11_unit
-
-#endif //TESTS_ASSERT_H_
+#endif //GUN_TEST_ASSERT_H_

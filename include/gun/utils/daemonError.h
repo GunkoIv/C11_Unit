@@ -1,4 +1,3 @@
-// Кодировка utf-8.
 #ifndef DAEMON_ERROR_H_
 #define DAEMON_ERROR_H_
 

@@ -1,18 +1,17 @@
-// Кодировка utf-8.
-#ifndef TESTS_TESTS_KEEPER_H_
-#define TESTS_TESTS_KEEPER_H_
+#ifndef GUN_TEST_TEST_KEEPER_H_
+#define GUN_TEST_TEST_KEEPER_H_
 
 #include <iostream>
 #include <vector>
 #include "Structures.h"
 
-#define TS_GEN_ADD_TEST(testPtr) Cpp11_unit::TestsKeeper<Cpp11_unit::Mock>::addTest(testPtr)
+#define TS_GEN_ADD_TEST(testPtr) gun::test::TestsKeeper<gun::test::Mock>::addTest(testPtr)
 
 // TODO maybe it's not a rigth way for all compilers!
-#define TS_GEN_ENSURE_TESTS_STORE_CREATED \
+#define TS_GEN_ENSURE_TEST_STORE_CREATED \
     TestsKeeper<Mock>::GLOBAL_added_tests_ptr.front()
 
-namespace Cpp11_unit {
+namespace gun { namespace test {
 
         class ITest;
 
@@ -48,6 +47,6 @@ namespace Cpp11_unit {
         template <typename Mock>
         AddedTests TestsKeeper<Mock>::GLOBAL_added_tests_ptr = AddedTests();
 
-} //namespace Cpp11_unit
+} } //namespace test and gun
 
-#endif //TESTS_TESTS_KEEPER_H_
+#endif //GUN_TEST_TEST_KEEPER_H_

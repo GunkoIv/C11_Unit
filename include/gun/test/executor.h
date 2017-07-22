@@ -1,14 +1,13 @@
-// Кодировка utf-8.
-#ifndef TESTS_EXECUTOR_H_
-#define TESTS_EXECUTOR_H_
+#ifndef GUN_TEST_EXECUTOR_H_
+#define GUN_TEST_EXECUTOR_H_
 
 #include <iostream>
 #include "ITest.h"
 #include "ITestSuite.h"
 
-#define TESTS_EXECUTE() Cpp11_unit::GeneralTests<Cpp11_unit::Mock>::runTestsExecute()
+#define TESTS_EXECUTE(settings) gun::test::GeneralTests<gun::test::Mock>::runTestsExecute(settings)
 
-namespace Cpp11_unit {
+namespace gun { namespace test {
 
         struct LessTestOrder {
             bool operator() (const ITest *const test1, const ITest *const test2) {
@@ -36,6 +35,10 @@ namespace Cpp11_unit {
             }
         };
 
+        class Settings {
+        public:
+            
+        };
 
         template<typename Mock>
         class GeneralTests 
@@ -58,7 +61,7 @@ namespace Cpp11_unit {
                 ;
             }
 
-            static int runTestsExecute() {
+            static int runTestsExecute(const Settings& /**/) {
                 printHellowInfo();
                 int returnValue = EXIT_SUCCESS;
                 
@@ -100,10 +103,7 @@ namespace Cpp11_unit {
             }
         
         };        
-
-        // template <typename Mock>
-        // AddedTests TestsKeeper<Mock>::GLOBAL_added_tests_ptr = AddedTests();
         
-} //namespace Cpp11_unit
+} } //namespace test and gun
 
-#endif //TESTS_EXECUTOR_H_
+#endif //GUN_TEST_EXECUTOR_H_

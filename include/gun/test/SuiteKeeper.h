@@ -1,14 +1,13 @@
-// Кодировка utf-8.
-#ifndef TESTS_SUITE_KEEPER_H_
-#define TESTS_SUITE_KEEPER_H_
+#ifndef GUN_TEST_SUITE_KEEPER_H_
+#define GUN_TEST_SUITE_KEEPER_H_
 
 #include <iostream>
 #include "ISuite.h"
 
 #define TS_GEN_GET_SUITE(TheSuite, SuiteName) \
-    Cpp11_unit::SuiteKeeper<Cpp11_unit::Mock>::getSuite<TheSuite>(SuiteName)
+    gun::test::SuiteKeeper<gun::test::Mock>::getSuite<TheSuite>(SuiteName)
 
-namespace Cpp11_unit {
+namespace gun { namespace test {
 
         class ITest;
 
@@ -39,6 +38,6 @@ namespace Cpp11_unit {
         template <typename Mock>
         std::unique_ptr<ISuite> SuiteKeeper<Mock>::GLOBAL_suite = nullptr;
 
-} //namespace Cpp11_unit
+} } //namespace test and gun
 
-#endif //TESTS_SUITE_KEEPER_H_
+#endif //GUN_TEST_SUITE_KEEPER_H_

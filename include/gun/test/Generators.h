@@ -1,6 +1,5 @@
-// Кодировка utf-8.
-#ifndef TESTS_GENERATORS_H_
-#define TESTS_GENERATORS_H_
+#ifndef GUN_TEST_GENERATORS_H_
+#define GUN_TEST_GENERATORS_H_
 
 #include "IGenerator.h"
 
@@ -9,7 +8,7 @@
 #include <ctime>
 
 #define DECL_GEN(GeneratorName,ReturnTypeMacros) \
-class GeneratorName : public Cpp11_unit::GeneratorBase<ReturnTypeMacros> { \
+class GeneratorName : public gun::test::GeneratorBase<ReturnTypeMacros> { \
     using ReturnType = ReturnTypeMacros; 
 
 #define GEN_END };
@@ -111,4 +110,4 @@ using Range = RangeType<>;
 
 } //namespace Generators
 
-#endif //TESTS_GENERATORS_H_
+#endif //GUN_TEST_GENERATORS_H_

@@ -1,12 +1,11 @@
-// Кодировка utf-8.
-#ifndef TESTS_ISUITE_H_
-#define TESTS_ISUITE_H_
+#ifndef GUN_TEST_ISUITE_H_
+#define GUN_TEST_ISUITE_H_
 
 #include "Structures.h"
 #include "IPrinter.h"
 #include "IFixture.h"
 
-namespace Cpp11_unit {
+namespace gun { namespace test {
 
         class LessTestOrder;
     
@@ -41,6 +40,6 @@ namespace Cpp11_unit {
         template<typename Suite = ISuite>
         using SuiteSPtr = std::shared_ptr<Suite>;
 
-} //namespace Cpp11_unit
+} } //namespace test and gun
 
-#endif //TESTS_ISUITE_H_
+#endif //GUN_TEST_ISUITE_H_

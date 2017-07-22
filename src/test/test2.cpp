@@ -1,5 +1,3 @@
-// Кодировка utf-8.
-// #include "executor.h"
 #include <iostream>
 
 class test2

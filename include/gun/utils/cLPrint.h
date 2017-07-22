@@ -1,4 +1,3 @@
-// Кодировка utf-8.
 #ifndef CLColor_H_
 #define CLColor_H_
 

@@ -1,4 +1,3 @@
-// Кодировка utf-8.
 #ifndef TABLES_CLTABLESVIEW_H_
 #define TABLES_CLTABLESVIEW_H_
 

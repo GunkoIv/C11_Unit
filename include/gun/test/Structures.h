@@ -1,6 +1,5 @@
-// Кодировка utf-8.
-#ifndef TESTS_STRUCTURES_H_
-#define TESTS_STRUCTURES_H_
+#ifndef GUN_TEST_STRUCTURES_H_
+#define GUN_TEST_STRUCTURES_H_
 
 #include <string>
 #include <memory>
@@ -8,12 +7,12 @@
 #include <deque>
 #include <set>
 #include <cstring>
-#include "../profiler.h"
+#include "../utils/profiler.h"
 
 #define UNUSED_VAR(expr) { (void)(expr); } 
-#define CODE_INFO Cpp11_unit::CodeInfo{__FILE__, __LINE__}
+#define CODE_INFO gun::test::CodeInfo{__FILE__, __LINE__}
 
-namespace Cpp11_unit {
+namespace gun { namespace test {
 
         struct Mock {};
 
@@ -92,6 +91,6 @@ namespace Cpp11_unit {
             }
         };
 
-} //namespace Cpp11_unit
+} } //namespace test and gun
 
-#endif //TESTS_STRUCTURES_H_
+#endif //GUN_TEST_STRUCTURES_H_

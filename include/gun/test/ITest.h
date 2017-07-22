@@ -1,6 +1,5 @@
-// Кодировка utf-8.
-#ifndef TESTS_ITEST_H_
-#define TESTS_ITEST_H_
+#ifndef GUN_TEST_ITEST_H_
+#define GUN_TEST_ITEST_H_
 
 #include "TestsKeeper.h"
 #include "Structures.h"
@@ -9,7 +8,7 @@
 #include "IGenerator.h"
 #include "Assert.h"
 
-namespace Cpp11_unit {
+namespace gun { namespace test {
 
     class LessTestOrder;
 
@@ -54,10 +53,10 @@ namespace Cpp11_unit {
 
         TestResult virtual execute() {
             try {
-                TRACE_PRINT("Hi there: ", getSuiteName(), ":", 
-                    CLPrint<CLColor::YELLOW>(getTestName()), ":", m_order_num, "!");
+                // TRACE_PRINT("Hi there: ", getSuiteName(), ":", 
+                //     CLPrint<CLColor::YELLOW>(getTestName()), ":", m_order_num, "!");
                 execute_body();
-                TRACE_PRINT("After '",getTestName(), "' body");
+                // TRACE_PRINT("After '",getTestName(), "' body");
             } catch(TestResult &assertError) {
                 return std::move(assertError);
             }
@@ -77,7 +76,7 @@ namespace Cpp11_unit {
 
         void registerTests() {
             TRACE_PRINT("S Register");
-            TS_GEN_ENSURE_TESTS_STORE_CREATED;
+            TS_GEN_ENSURE_TEST_STORE_CREATED;
             TS_GEN_ADD_TEST(this);
         }
 
@@ -92,6 +91,6 @@ namespace Cpp11_unit {
         Container<IFixture> m_fixtures {};
     };
 
-} //namespace Cpp11_unit
+} } //namespace test and gun
 
-#endif //TESTS_ITEST_H_
+#endif //GUN_TEST_ITEST_H_

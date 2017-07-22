@@ -1,4 +1,3 @@
-// Кодировка utf-8.
 #ifndef UTILITY_H_
 #define UTILITY_H_
 

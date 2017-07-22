@@ -1,7 +1,5 @@
-// Кодировка utf-8.
-#include "executor.h"
-#include "Macroses.h"
-#include "Generators.h"
+#include "gun/test/test.h"
+#include "gun/test/Generators.h"
 
 TEST(UserSimpleTest1) {
     formatPrint("Test with name '", getTestName(), "' Start execution!");
@@ -66,8 +64,6 @@ TEST_S(TestGen1, FirstSuite) {
     print("Generated char: ", rangeChar);
 }
 
-#include "../profiler.h"
-
 TEST_S(TestSecondSuite, SecondSuite) {
     GENERATOR(rangeNumber, Generators::Range, 2, 5, 5);
     formatPrint("Test of second Suite! EEaarrr baby!! '", getSuiteName(), "' Start", rangeNumber);
@@ -76,7 +72,7 @@ TEST_S(TestSecondSuite, SecondSuite) {
     TRACE_VAR(rangeNumber);
 }
 
-#include "../toString.h"
+#include "gun/utils/toString.h"
 #include <vector>
 #include <map>
 
@@ -86,7 +82,7 @@ TEST(Test_ToString) {
     ));
 }
 
-#include "../tables/tables.h"
+#include "gun/table/tables.h"
 
 TEST_N(Test_CLTable, 0) {
     GENERATOR(rangeNumber, Generators::Range, 2, 5, 5);

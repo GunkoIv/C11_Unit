@@ -1,11 +1,10 @@
-// Кодировка utf-8.
-#ifndef TESTS_IPRINTER_H_
-#define TESTS_IPRINTER_H_
+#ifndef GUN_TEST_IPRINTER_H_
+#define GUN_TEST_IPRINTER_H_
 
 #include "Structures.h"
-#include "../cLPrint.h"
+#include "../utils/cLPrint.h"
 
-namespace Cpp11_unit {
+namespace gun { namespace test {
 
         class IPrinter {
         public:
@@ -24,6 +23,6 @@ namespace Cpp11_unit {
             }
         };
         
-} //namespace Cpp11_unit
+} } //namespace test and gun
 
-#endif //TESTS_IPRINTER_H_
+#endif //GUN_TEST_IPRINTER_H_

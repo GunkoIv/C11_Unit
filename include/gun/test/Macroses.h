@@ -1,9 +1,8 @@
-// Кодировка utf-8.
-#ifndef TESTS_MACROSES_H_
-#define TESTS_MACROSES_H_
+#ifndef GUN_TEST_MACROSES_H_
+#define GUN_TEST_MACROSES_H_
 
 #define TEST(ClassName) \
-class ClassName : public Cpp11_unit::ITest { \
+class ClassName : public gun::test::ITest { \
     void virtual execute_body() override; \
     ClassName(std::string &&name) \
        : ITest(std::move(name)) \
@@ -18,7 +17,7 @@ ClassName ClassName::m_self = ClassName(#ClassName); \
 void ClassName::execute_body()
 
 #define TEST_N(ClassName,OrderNumber) \
-class ClassName : public Cpp11_unit::ITest { \
+class ClassName : public gun::test::ITest { \
     void virtual execute_body() override; \
     ClassName(std::string &&name, unsigned int orderNumber) \
        : ITest(std::move(name), orderNumber) \
@@ -33,11 +32,11 @@ ClassName ClassName::m_self = ClassName(#ClassName, OrderNumber); \
 void ClassName::execute_body()
 
 #define TEST_S(ClassName,SuiteName) \
-class ClassName : public Cpp11_unit::ITestSuite<SuiteName> { \
+class ClassName : public gun::test::ITestSuite<SuiteName> { \
     void virtual execute_body() override; \
     ClassName(std::string &&name) \
        : ITestSuite<SuiteName>(std::move(name), \
-        Cpp11_unit::SuiteInfo(SuiteName::getSuiteName(), SuiteName::getOrderNumber())) \
+        gun::test::SuiteInfo(SuiteName::getSuiteName(), SuiteName::getOrderNumber())) \
     { \
        registerTests(); \
     } \
@@ -49,11 +48,11 @@ ClassName ClassName::m_self = ClassName(#ClassName); \
 void ClassName::execute_body()
 
 #define TEST_S_N(ClassName,SuiteName,OrderNumber) \
-class ClassName : public Cpp11_unit::ITestSuite<SuiteName> { \
+class ClassName : public gun::test::ITestSuite<SuiteName> { \
     void virtual execute_body() override; \
     ClassName(std::string &&name, unsigned int orderNumber) \
        : ITestSuite<SuiteName>(std::move(name), \
-        Cpp11_unit::SuiteInfo(SuiteName::getSuiteName(), SuiteName::getOrderNumber()), orderNumber) \
+        gun::test::SuiteInfo(SuiteName::getSuiteName(), SuiteName::getOrderNumber()), orderNumber) \
     { \
        registerTests(); \
     } \
@@ -65,7 +64,7 @@ ClassName ClassName::m_self = ClassName(#ClassName, OrderNumber); \
 void ClassName::execute_body()
 
 #define SUITE_N(SuiteName, SuiteOrderNumber) \
-class SuiteName : public Cpp11_unit::ISuite { \
+class SuiteName : public gun::test::ISuite { \
 public: \
     static const std::string & getSuiteName() { \
         static std::string str = #SuiteName; \
@@ -74,22 +73,22 @@ public: \
     static unsigned int getOrderNumber() { \
         return SuiteOrderNumber; \
     } \
-/*friend TS_GEN; */friend Cpp11_unit::SetupWrapper<SuiteName>; \
+/*friend TS_GEN; */friend gun::test::SetupWrapper<SuiteName>; \
 private:
 
 #define SUITE(SuiteName) \
-class SuiteName : public Cpp11_unit::ISuite { \
+class SuiteName : public gun::test::ISuite { \
 public: \
     static const std::string & getSuiteName() { \
         static std::string str = #SuiteName; \
         return str; \
     } \
     static unsigned int getOrderNumber() { \
-        return Cpp11_unit::Default::defaultOrderNumber; \
+        return gun::test::Default::defaultOrderNumber; \
     } \
-/*friend TS_GEN; */friend Cpp11_unit::SetupWrapper<SuiteName>; \
+/*friend TS_GEN; */friend gun::test::SetupWrapper<SuiteName>; \
 private:
 
 #define SUITE_END };
 
-#endif //TESTS_MACROSES_H_
+#endif //GUN_TEST_MACROSES_H_

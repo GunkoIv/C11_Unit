@@ -1,13 +1,12 @@
-// Кодировка utf-8.
-#ifndef TESTS_ITEST_SUITE_H_
-#define TESTS_ITEST_SUITE_H_
+#ifndef GUN_TEST_ITEST_SUITE_H_
+#define GUN_TEST_ITEST_SUITE_H_
 
 #include "Structures.h"
 // #include "ISuite.h"
 #include "ITest.h"
 #include "SuiteKeeper.h"
 
-namespace Cpp11_unit {
+namespace gun { namespace test {
 
     template<typename TheSuite>
     class ITestSuite : public ITest {
@@ -32,6 +31,6 @@ namespace Cpp11_unit {
         }
     };
 
-} //namespace Cpp11_unit
+} } //namespace test and gun
 
-#endif //TESTS_ITEST_SUITE_H_
+#endif //GUN_TEST_ITEST_SUITE_H_

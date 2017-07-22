@@ -1,4 +1,3 @@
-// Кодировка utf-8.
 #ifndef THREAD_POOL_H_
 #define THREAD_POOL_H_
 

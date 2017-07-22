@@ -1,13 +1,12 @@
-// Кодировка utf-8.
-#ifndef TESTS_IGENERATOR_H_
-#define TESTS_IGENERATOR_H_
+#ifndef GUN_TEST_IGENERATOR_H_
+#define GUN_TEST_IGENERATOR_H_
 
 #include "Structures.h"
 #include "IPrinter.h"
 #include "IFixture.h"
 #include <algorithm>
 
-namespace Cpp11_unit {
+namespace gun { namespace test {
 
     class IGenerator {
     public:
@@ -127,6 +126,6 @@ namespace Cpp11_unit {
         Container<IGenerator *> m_activeGenPtrs{};
     };
 
-} //namespace Cpp11_unit
+} } //namespace test and gun
 
-#endif //TESTS_IGENERATOR_H_
+#endif //GUN_TEST_IGENERATOR_H_

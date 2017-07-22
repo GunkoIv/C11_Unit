@@ -1,4 +1,3 @@
-// Кодировка utf-8.
 #ifndef TABLES_TABLES_H_
 #define TABLES_TABLES_H_
 

@@ -1,4 +1,3 @@
-// Кодировка utf-8.
 #ifndef TO_STRING_H_
 #define TO_STRING_H_
 

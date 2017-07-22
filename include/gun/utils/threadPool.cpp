@@ -1,4 +1,3 @@
-// Кодировка utf-8.
 #include "threadPool.h"
 #include "profiler.h"
 #include <chrono>
